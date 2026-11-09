@@ -5,13 +5,20 @@ const TaskModel = {
     return rows[0];
   },
 
-  getFiltered: async (divisi, status) => {
+getFiltered: async (eventId, divisi, status) => {
   const [rows] = await db.execute(
-    "SELECT * FROM tugas " +
-    "WHERE (? = '' OR divisi = ?) AND (? = '' OR status_task = ?) " +
-    "ORDER BY tgl_deadline ASC, id ASC",
-    [divisi, divisi, status, status]
+    "SELECT t.*, p.nama AS nama_pic " +
+    "FROM tugas t LEFT JOIN panitia p ON t.panitia_id = p.id " +
+    "WHERE t.event_id = ? AND (? = '' OR t.divisi = ?) AND (? = '' OR t.status_task = ?) " +
+    "ORDER BY t.tgl_deadline ASC, t.id ASC",
+    [eventId, divisi, divisi, status, status]
   );
+  return rows;
+},
+
+getPanitiaList: async (eventId) => {
+  const [rows] = await db.execute(
+    "SELECT id, nama, divisi FROM panitia WHERE event_id = ? ORDER BY nama ASC", [eventId]);
   return rows;
 },
 

@@ -21,8 +21,10 @@ const ambilEvent = async (req, res) => {
 };
 
 const ambilOpsi = async () => ({
-  statusList: await taskModel.getStatusList(),
-  prioritasList: await taskModel.getPrioritasList(),
+  divisiList: await taskModel.getEnumValues('divisi'),
+  statusList: await taskModel.getStatusList('prioritas'),
+  prioritasList: await taskModel.getPrioritasList('status_task'),
+  panitiaList: await taskModel.getPanitiaList(eventId),
 });
 
 const rapikan = (body) => ({
@@ -32,6 +34,7 @@ const rapikan = (body) => ({
   tgl_deadline: body.tgl_deadline,
   status_task: body.status_task,
   pic: (body.pic || "").trim(),
+  panitia_id: body.panitia_id ? Number(body.panitia_id) : null,
 });
 
 // Mengembalikan pesan error, atau null kalau semua valid
@@ -43,6 +46,8 @@ const validasi = (d, { statusList, prioritasList }) => {
   if (!prioritasList.includes(d.prioritas)) return "Prioritas tidak valid.";
   if (!statusList.includes(d.status_task)) return "Status tidak valid.";
   if (!tanggalValid(d.tgl_deadline)) return "Tanggal deadline tidak valid.";
+  if (d.panitia_id !== null && !panitiaList.some((p) => p.id === d.panitia_id)) {
+  return "Penanggung jawab tidak valid.";
   return null;
 };
 
@@ -77,7 +82,7 @@ exports.getFormCreateTask = async (req, res) => {
     res.render("pages/tambah-task", {
       pageTitle: "Form Tambah Tugas Baru", 
       halaman: "Add Task",
-      event, ...(await ambilOpsi()),
+      event, task: {}, ...(await ambilOpsi(event.id)),
     });
   } catch (error) {
     console.error("[ERROR getFormCreate]:", error);
@@ -159,3 +164,4 @@ exports.postDeleteTask = async (req, res) => {
     res.status(500).send("Gagal menghapus tugas dari basis data.");
   }
 };
+}

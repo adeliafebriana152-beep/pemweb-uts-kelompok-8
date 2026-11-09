@@ -36,10 +36,17 @@
                 <option value="diproses">Diproses</option>
                 <option value="selesai">Selesai</option>
             </select>
-        </div>
-         <div class="form-group">
-            <label for="pic">PIC:</label>
-             <input type="text" id="pic" name="pic" required>
+            
+        <div class="form-group">
+            <label for="panitia_id">Penanggung Jawab:</label>
+            <select name="panitia_id" id="panitia_id">
+            <option value="">Belum ditentukan</option>
+            <% panitiaList.forEach(p => { %>
+            <option value="<%= p.id %>" <%= task.panitia_id == p.id ? 'selected' : '' %>>
+            <%= p.nama %> (<%= p.divisi %>)
+            </option>
+            <% }) %>
+        </select>
         </div>
 
         <button type="submit">Tambah Tugas</button>
