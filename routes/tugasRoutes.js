@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const tugasController = require('../controllers/tugasController');
 
-router.get('/', tugasController.getListTask),
+router.get('/', tugasController.getListTask);
 router.get('/tambah', tugasController.getFormCreateTask);
 router.post('/tambah', tugasController.postCreateTask);
 router.get('/edit/:id', tugasController.getFormEditTask);

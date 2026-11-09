@@ -48,6 +48,7 @@ const validasi = (d, { statusList, prioritasList }) => {
   if (!tanggalValid(d.tgl_deadline)) return "Tanggal deadline tidak valid.";
   if (d.panitia_id !== null && !panitiaList.some((p) => p.id === d.panitia_id)) {
   return "Penanggung jawab tidak valid.";
+  }
   return null;
 };
 
@@ -164,4 +165,4 @@ exports.postDeleteTask = async (req, res) => {
     res.status(500).send("Gagal menghapus tugas dari basis data.");
   }
 };
-}
+

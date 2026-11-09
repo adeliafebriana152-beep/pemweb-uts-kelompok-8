@@ -1,6 +1,6 @@
 const TaskModel = {
 
-  getEventById: async (eventId) => {
+getEventById: async (eventId) => {
     const [rows] = await db.execute("SELECT id, judul FROM event WHERE id = ?", [eventId]);
     return rows[0];
   },
