@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const ctrl = require('../controllers/eventController');
+const eventController = require('../controllers/eventController');
 
-router.get('/', ctrl.index);
-router.get('/create', ctrl.createForm);   // harus sebelum /:id
-router.post('/', ctrl.store);
-router.get('/:id/edit', ctrl.editForm);
-router.post('/:id', ctrl.update);
-router.post('/:id/delete', ctrl.destroy); // delete lewat form POST
+router.get('/', eventController.getListEvent);
+router.get('/create', eventController.getFormCreateEvent);
+router.post('/', eventController.postCreateEvent);
+router.get('/:id/edit', eventController.getFormEditEvent);
+router.post('/:id', eventController.postUpdateEvent);
+router.post('/:id/delete', eventController.postDeleteEvent); 
 
 module.exports = router;

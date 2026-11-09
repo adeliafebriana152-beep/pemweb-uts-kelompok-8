@@ -1,0 +1,38 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/nav', { active: 'panitia' }) %>
+
+<h1><%= title %></h1>
+
+<% if (errors.length > 0) { %>
+  <div class="alert error"><ul>
+    <% errors.forEach(err => { %><li><%= err %></li><% }) %>
+  </ul></div>
+<% } %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Nama Lengkap</label>
+  <input type="text" name="nama" maxlength="100" value="<%= panitia.nama || '' %>" required>
+
+  <label>NIM</label>
+  <input type="text" name="nim" maxlength="20" value="<%= panitia.nim || '' %>" required>
+
+  <label>Divisi</label>
+  <input type="text" name="divisi" value="<%= panitia.divisi || '' %>" required>
+
+  <label>Jabatan</label>
+  <input type="text" name="jabatan" value="<%= panitia.jabatan || '' %>" required>
+
+  <label>Jenis Kelamin</label>
+  <select name="jenis_kelamin" required>
+    <% JENIS_KELAMIN.forEach(j => { %>
+      <option value="<%= j %>" <%= panitia.jenis_kelamin === j ? 'selected' : '' %>><%= j %></option>
+    <% }) %>
+  </select>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a href="<%= base %>" class="btn">Batal</a>
+  </div>
+</form>
+
+<%- include('../../partials/footer') %>

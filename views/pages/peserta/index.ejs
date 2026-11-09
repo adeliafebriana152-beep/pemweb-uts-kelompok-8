@@ -1,25 +1,19 @@
 <%- include('../../partials/header') %>
+<%- include('../../partials/nav', { active: 'peserta' }) %>
 
 <div class="top-bar">
-  <h1>Daftar Peserta</h1>
-  <a href="/peserta/create" class="btn btn-primary">+ Tambah Peserta</a>
+  <h1>Peserta</h1>
+  <a href="<%= base %>/create" class="btn btn-primary">+ Tambah Peserta</a>
 </div>
 
 <% if (msg === 'created') { %><div class="alert success">Peserta berhasil ditambahkan.</div><% } %>
 <% if (msg === 'updated') { %><div class="alert success">Peserta berhasil diperbarui.</div><% } %>
 <% if (msg === 'deleted') { %><div class="alert success">Peserta berhasil dihapus.</div><% } %>
 
-<form method="GET" action="/peserta" class="filter">
+<form method="GET" action="<%= base %>" class="filter">
   <input type="text" name="q" placeholder="Cari nama atau NIM..." value="<%= q %>">
-  <select name="event_id">
-    <option value="">Semua Event</option>
-    <option value="none" <%= eventId === 'none' ? 'selected' : '' %>>Tanpa event</option>
-    <% events.forEach(e => { %>
-      <option value="<%= e.id %>" <%= String(eventId) === String(e.id) ? 'selected' : '' %>><%= e.judul %></option>
-    <% }) %>
-  </select>
   <button type="submit" class="btn">Cari</button>
-  <a href="/peserta" class="btn">Reset</a>
+  <a href="<%= base %>" class="btn">Reset</a>
 </form>
 
 <% if (peserta.length === 0) { %>
@@ -28,16 +22,7 @@
   <div class="table-wrap">
     <table>
       <thead>
-        <tr>
-          <th>No</th>
-          <th>Nama</th>
-          <th>NIM</th>
-          <th>Email</th>
-          <th>No HP</th>
-          <th>Prodi</th>
-          <th>Event</th>
-          <th>Aksi</th>
-        </tr>
+        <tr><th>No</th><th>Nama</th><th>NIM</th><th>Email</th><th>No HP</th><th>Prodi</th><th>Aksi</th></tr>
       </thead>
       <tbody>
         <% peserta.forEach((p, i) => { %>
@@ -48,12 +33,9 @@
             <td><%= p.email %></td>
             <td><%= p.no_hp %></td>
             <td><%= p.prodi %></td>
-            <td>
-              <% if (p.judul_event) { %><%= p.judul_event %><% } else { %><span class="muted">Tanpa event</span><% } %>
-            </td>
             <td class="aksi">
-              <a href="/peserta/<%= p.id %>/edit" class="btn btn-sm">Edit</a>
-              <form method="POST" action="/peserta/<%= p.id %>/delete" onsubmit="return confirm('Hapus peserta ini?')">
+              <a href="<%= base %>/<%= p.id %>/edit" class="btn btn-sm">Edit</a>
+              <form method="POST" action="<%= base %>/<%= p.id %>/delete" onsubmit="return confirm('Hapus peserta ini?')">
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
               </form>
             </td>

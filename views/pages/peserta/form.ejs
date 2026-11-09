@@ -1,13 +1,12 @@
 <%- include('../../partials/header') %>
+<%- include('../../partials/nav', { active: 'peserta' }) %>
 
 <h1><%= title %></h1>
 
 <% if (errors.length > 0) { %>
-  <div class="alert error">
-    <ul>
-      <% errors.forEach(err => { %><li><%= err %></li><% }) %>
-    </ul>
-  </div>
+  <div class="alert error"><ul>
+    <% errors.forEach(err => { %><li><%= err %></li><% }) %>
+  </ul></div>
 <% } %>
 
 <form method="POST" action="<%= action %>" class="form">
@@ -26,17 +25,9 @@
   <label>Prodi</label>
   <input type="text" name="prodi" maxlength="80" value="<%= peserta.prodi || '' %>" required>
 
-  <label>Event (opsional)</label>
-  <select name="event_id">
-    <option value="">Tanpa event</option>
-    <% events.forEach(e => { %>
-      <option value="<%= e.id %>" <%= String(peserta.event_id) === String(e.id) ? 'selected' : '' %>><%= e.judul %></option>
-    <% }) %>
-  </select>
-
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Simpan</button>
-    <a href="/peserta" class="btn">Batal</a>
+    <a href="<%= base %>" class="btn">Batal</a>
   </div>
 </form>
 

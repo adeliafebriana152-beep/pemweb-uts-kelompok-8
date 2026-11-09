@@ -3,7 +3,6 @@ const Event = require('../models/eventModel');
 const STATUS = ['dibuka', 'ditutup', 'selesai'];
 const KATEGORI = ['Akademik', 'Non-Akademik'];
 
-// Validasi di server, mengembalikan { data, errors }
 function validate(body) {
   const data = {
     judul: (body.judul || '').trim(),
@@ -41,8 +40,7 @@ function validate(body) {
   return { data, errors };
 }
 
-// GET /event
-exports.index = async (req, res, next) => {
+exports.getListEvent = async (req, res, next) => {
   try {
     const status = STATUS.includes(req.query.status) ? req.query.status : '';
     const q = (req.query.q || '').trim();
@@ -53,9 +51,8 @@ exports.index = async (req, res, next) => {
   }
 };
 
-// GET /event/create
-exports.createForm = (req, res) => {
-  res.render('event/form', {
+exports.getFormCreateEvent = (req, res) => {
+  res.render('pages/event/form', {
     title: 'Tambah Event',
     action: '/event',
     event: { kategori: 'Akademik', status: 'dibuka' },
@@ -65,8 +62,7 @@ exports.createForm = (req, res) => {
   });
 };
 
-// POST /event
-exports.store = async (req, res, next) => {
+exports.postCreateEvent = async (req, res, next) => {
   try {
     const { data, errors } = validate(req.body);
     if (errors.length > 0) {
@@ -86,8 +82,7 @@ exports.store = async (req, res, next) => {
   }
 };
 
-// GET /event/:id/edit
-exports.editForm = async (req, res, next) => {
+exports.getFormEditEvent = async (req, res, next) => {
   try {
     const event = await Event.getById(req.params.id);
     if (!event) return res.status(404).send('Event tidak ditemukan');
@@ -104,8 +99,7 @@ exports.editForm = async (req, res, next) => {
   }
 };
 
-// POST /event/:id
-exports.update = async (req, res, next) => {
+exports.postUpdateEvent = async (req, res, next) => {
   try {
     const id = req.params.id;
     const { data, errors } = validate(req.body);
@@ -127,8 +121,7 @@ exports.update = async (req, res, next) => {
   }
 };
 
-// POST /event/:id/delete
-exports.destroy = async (req, res, next) => {
+exports.postDeleteEvent = async (req, res, next) => {
   try {
     await Event.remove(req.params.id);
     res.redirect('/event?msg=deleted');

@@ -1,0 +1,9 @@
+<div class="event-nav">
+  <a href="/event" class="back-link">&larr; Semua Event</a>
+  <h2 class="event-title"><%= event.judul %> <small><%= formatTanggal(event.tanggal) %> &middot; <%= event.lokasi %></small></h2>
+  <div class="tabs">
+    <a href="/event/<%= event.id %>/peserta" class="<%= active === 'peserta' ? 'active' : '' %>">Peserta</a>
+    <a href="/event/<%= event.id %>/panitia" class="<%= active === 'panitia' ? 'active' : '' %>">Panitia</a>
+    <a href="/event/<%= event.id %>/task" class="<%= active === 'task' ? 'active' : '' %>">Tugas Panitia</a>
+  </div>
+</div>

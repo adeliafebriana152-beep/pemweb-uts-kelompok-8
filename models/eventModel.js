@@ -1,9 +1,10 @@
 const pool = require('../config/db');
 
-// READ: semua event + jumlah peserta, dengan filter status & pencarian judul
 async function getAll({ status, q } = {}) {
   let sql =
-    'SELECT e.*, COUNT(p.id) AS jumlah_peserta ' +
+    'SELECT e.*, COUNT(p.id) AS jumlah_peserta, ' +
+    '(SELECT COUNT(*) FROM panitia pa WHERE pa.event_id = e.id) AS jumlah_panitia, ' +
+    '(SELECT COUNT(*) FROM tugas t WHERE t.event_id = e.id) AS jumlah_tugas ' +
     'FROM event e LEFT JOIN peserta p ON p.event_id = e.id';
   const where = [];
   const params = [];
@@ -25,7 +26,6 @@ async function getAll({ status, q } = {}) {
   return rows;
 }
 
-// READ: satu event
 async function getById(id) {
   const [rows] = await pool.execute('SELECT * FROM event WHERE id = ?', [id]);
   return rows[0] || null;
@@ -51,7 +51,7 @@ async function update(id, d) {
   return result.affectedRows;
 }
 
-// DELETE (event_id di tabel peserta otomatis jadi NULL lewat FK SET NULL)
+// DELETE 
 async function remove(id) {
   const [result] = await pool.execute('DELETE FROM event WHERE id = ?', [id]);
   return result.affectedRows;

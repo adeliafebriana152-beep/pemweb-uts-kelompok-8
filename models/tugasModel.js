@@ -1,80 +1,61 @@
-const TaskModel = {
+const pool = require('../config/db');
 
-getEventById: async (eventId) => {
-    const [rows] = await db.execute("SELECT id, judul FROM event WHERE id = ?", [eventId]);
-    return rows[0];
-  },
+async function getAll(eventId, { divisi, status } = {}) {
+  let sql =
+    'SELECT t.*, p.nama AS nama_pic ' +
+    'FROM tugas t LEFT JOIN panitia p ON p.id = t.panitia_id ' +
+    'WHERE t.event_id = ?';
+  const params = [eventId];
+  if (divisi) {
+    sql += ' AND t.divisi = ?';
+    params.push(divisi);
+  }
+  if (status) {
+    sql += ' AND t.status_task = ?';
+    params.push(status);
+  }
+  sql += ' ORDER BY t.tgl_deadline ASC, t.id ASC';
+  const [rows] = await pool.execute(sql, params);
+  return rows;
+}
 
-getFiltered: async (eventId, divisi, status) => {
-  const [rows] = await db.execute(
-    "SELECT t.*, p.nama AS nama_pic " +
-    "FROM tugas t LEFT JOIN panitia p ON t.panitia_id = p.id " +
-    "WHERE t.event_id = ? AND (? = '' OR t.divisi = ?) AND (? = '' OR t.status_task = ?) " +
-    "ORDER BY t.tgl_deadline ASC, t.id ASC",
-    [eventId, divisi, divisi, status, status]
+async function getDivisiList(eventId) {
+  const [rows] = await pool.execute(
+    'SELECT DISTINCT divisi FROM tugas WHERE event_id = ? ORDER BY divisi ASC', [eventId]
   );
-  return rows;
-},
+  return rows.map((r) => r.divisi);
+}
 
-getPanitiaList: async (eventId) => {
-  const [rows] = await db.execute(
-    "SELECT id, nama, divisi FROM panitia WHERE event_id = ? ORDER BY nama ASC", [eventId]);
-  return rows;
-},
+async function getById(id, eventId) {
+  const [rows] = await pool.execute(
+    'SELECT * FROM tugas WHERE id = ? AND event_id = ?', [id, eventId]
+  );
+  return rows[0] || null;
+}
 
-getDivisiList: async () => {
-  const [rows] = await db.execute("SELECT DISTINCT divisi FROM tugas ORDER BY divisi ASC");
-  return rows.map(r => r.divisi);
-},
+async function create(eventId, d) {
+  const [r] = await pool.execute(
+    'INSERT INTO tugas (nama_task, divisi, prioritas, tgl_deadline, status_task, panitia_id, event_id) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [d.nama_task, d.divisi, d.prioritas, d.tgl_deadline, d.status_task, d.panitia_id, eventId]
+  );
+  return r.insertId;
+}
 
-getStatusList: async () => {
-  const [rows] = await db.execute("SELECT DISTINCT status_task FROM tugas ORDER BY status_task ASC");
-  return rows.map(r => r.status_task);
-},
+async function update(id, eventId, d) {
+  const [r] = await pool.execute(
+    'UPDATE tugas SET nama_task = ?, divisi = ?, prioritas = ?, tgl_deadline = ?, status_task = ?, ' +
+      'panitia_id = ? WHERE id = ? AND event_id = ?',
+    [d.nama_task, d.divisi, d.prioritas, d.tgl_deadline, d.status_task, d.panitia_id, id, eventId]
+  );
+  return r.affectedRows;
+}
 
-  create: async (data) => {
-    const sql = `
-      INSERT INTO tugas (nama_task, divisi, prioritas, tgl_deadline, status_task, pic)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-    const [result] = await db.execute(sql, [
-      data.nama_task,
-      data.divisi,
-      data.prioritas,
-      data.tgl_deadline,
-      data.status_task,
-      data.pic,
-    ]);
-    return result;
-  },
+async function remove(id, eventId) {
+  const [r] = await pool.execute(
+    'DELETE FROM tugas WHERE id = ? AND event_id = ?', [id, eventId]
+  );
+  return r.affectedRows;
+}
 
-  getByIdTugas: async (id) => {
-    const [rows] = await db.execute("SELECT * FROM tugas WHERE id = ?", [id]);
-    return rows[0]; 
-  },
-
-  update: async (id, data) => {
-    const sql = `
-        UPDATE tugas
-        SET nama_task = ?, divisi = ?, prioritas = ?, tgl_deadline = ?, status_task = ?, pic = ?
-        WHERE id = ?
-    `;
-    const [result] = await db.execute(sql, [
-      data.nama_task,
-      data.divisi,
-      data.prioritas,
-      data.tgl_deadline,
-      data.status_task,
-      data.pic,
-      id,
-    ]);
-    return result;
-  },
-
-  delete: async (id) => {
-    const sql = "DELETE FROM tugas WHERE id = ?";
-    const [result] = await db.execute(sql, [id]);
-    return result;
-  },
-};
-module.exports = TaskModel;
+module.exports = { getAll, getDivisiList, getById, create, update, remove };

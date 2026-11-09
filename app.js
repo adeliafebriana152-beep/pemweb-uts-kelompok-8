@@ -14,7 +14,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Helper tanggal ramah baca: 2026-11-10 -> "10 Nov 2026"
 const BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 app.locals.formatTanggal = (str) => {
   if (!str) return '-';
@@ -25,8 +24,8 @@ app.locals.formatWaktu = (str) => (str ? String(str).slice(0, 5) + ' WIB' : '-')
 
 app.get('/', (req, res) => res.redirect('/event'));
 app.use('/event', eventRoutes);
-app.use('/peserta', pesertaRoutes);
-app.use('/panitia', panitiaRoutes);
+app.use('/event/:eventId/peserta', pesertaRoutes);
+app.use('/event/:eventId/panitia', panitiaRoutes);
 app.use('/event/:eventId/task', tugasRoutes);
 
 app.use((req, res) => res.status(404).send('Halaman tidak ditemukan'));

@@ -1,45 +1,52 @@
-const db = require('../config/db');
+const pool = require('../config/db');
 
-const Panitia = {
-    // Read: Menampilkan data panitia beserta judul event-nya (LEFT JOIN)
-    getAll: async () => {
-        const query = `
-            SELECT panitia.*, event.judul AS judul_event 
-            FROM panitia 
-            LEFT JOIN event ON panitia.event_id = event.id
-        `;
-        const [rows] = await db.query(query);
-        return rows;
-    },
+async function getAll(eventId, q) {
+  let sql = 'SELECT * FROM panitia WHERE event_id = ?';
+  const params = [eventId];
+  if (q) {
+    sql += ' AND (nama LIKE ? OR nim LIKE ?)';
+    params.push('%' + q + '%', '%' + q + '%');
+  }
+  sql += ' ORDER BY divisi ASC, nama ASC';
+  const [rows] = await pool.execute(sql, params);
+  return rows;
+}
 
-    // Ambil data berdasarkan ID untuk keperluan edit
-    getById: async (id) => {
-        const [rows] = await db.query('SELECT * FROM panitia WHERE id = ?', [id]);
-        return rows[0];
-    },
+async function getOptions(eventId) {
+  const [rows] = await pool.execute(
+    'SELECT id, nama, divisi FROM panitia WHERE event_id = ? ORDER BY nama ASC', [eventId]
+  );
+  return rows;
+}
 
-    // Ambil daftar event untuk pilihan dropdown di form
-    getAllEvents: async () => {
-        const [rows] = await db.query('SELECT id, judul FROM event');
-        return rows;
-    },
+async function getById(id, eventId) {
+  const [rows] = await pool.execute(
+    'SELECT * FROM panitia WHERE id = ? AND event_id = ?', [id, eventId]
+  );
+  return rows[0] || null;
+}
 
-    // Create: Menyimpan data panitia baru (Tanpa foto)
-    create: async (data) => {
-        const query = 'INSERT INTO panitia (nama, nim, divisi, jabatan, jenis_kelamin, event_id) VALUES (?, ?, ?, ?, ?, ?)';
-        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.event_id || null]);
-    },
+async function create(eventId, d) {
+  const [r] = await pool.execute(
+    'INSERT INTO panitia (nama, nim, divisi, jabatan, jenis_kelamin, event_id) VALUES (?, ?, ?, ?, ?, ?)',
+    [d.nama, d.nim, d.divisi, d.jabatan, d.jenis_kelamin, eventId]
+  );
+  return r.insertId;
+}
 
-    // Update: Memperbarui data panitia (Tanpa foto)
-    update: async (id, data) => {
-        const query = 'UPDATE panitia SET nama = ?, nim = ?, divisi = ?, jabatan = ?, jenis_kelamin = ?, event_id = ? WHERE id = ?';
-        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.event_id || null, id]);
-    },
+async function update(id, eventId, d) {
+  const [r] = await pool.execute(
+    'UPDATE panitia SET nama = ?, nim = ?, divisi = ?, jabatan = ?, jenis_kelamin = ? WHERE id = ? AND event_id = ?',
+    [d.nama, d.nim, d.divisi, d.jabatan, d.jenis_kelamin, id, eventId]
+  );
+  return r.affectedRows;
+}
 
-    // Delete: Menghapus data panitia
-    delete: async (id) => {
-        await db.query('DELETE FROM panitia WHERE id = ?', [id]);
-    }
-};
+async function remove(id, eventId) {
+  const [r] = await pool.execute(
+    'DELETE FROM panitia WHERE id = ? AND event_id = ?', [id, eventId]
+  );
+  return r.affectedRows;
+}
 
-module.exports = Panitia;
+module.exports = { getAll, getOptions, getById, create, update, remove };

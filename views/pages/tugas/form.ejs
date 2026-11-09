@@ -1,0 +1,58 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/nav', { active: 'task' }) %>
+
+<h1><%= title %></h1>
+
+<% if (errors.length > 0) { %>
+  <div class="alert error"><ul>
+    <% errors.forEach(err => { %><li><%= err %></li><% }) %>
+  </ul></div>
+<% } %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Nama Tugas</label>
+  <input type="text" name="nama_task" maxlength="150" value="<%= task.nama_task || '' %>" required>
+
+  <label>Divisi</label>
+  <input type="text" name="divisi" list="daftar-divisi" value="<%= task.divisi || '' %>" required>
+  <datalist id="daftar-divisi">
+    <% divisiOptions.forEach(d => { %><option value="<%= d %>"><% }) %>
+  </datalist>
+
+  <div class="row">
+    <div>
+      <label>Prioritas</label>
+      <select name="prioritas" required>
+        <% PRIORITAS.forEach(p => { %>
+          <option value="<%= p %>" <%= task.prioritas === p ? 'selected' : '' %>><%= p.charAt(0).toUpperCase() + p.slice(1) %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div>
+      <label>Status Tugas</label>
+      <select name="status_task" required>
+      <% STATUS_TASK.forEach(s => { %>
+    <option value="<%= s %>" <%= task.status_task === s ? 'selected' : '' %>><%= s %></option>
+    <% }) %>
+    </select>
+    </div>
+  </div>
+
+  <label>Tanggal Deadline</label>
+  <input type="date" name="tgl_deadline" value="<%= task.tgl_deadline ? String(task.tgl_deadline).slice(0, 10) : '' %>" required>
+
+  <label>Penanggung Jawab (opsional)</label>
+  <select name="panitia_id">
+    <option value="">Belum ditentukan</option>
+    <% panitiaList.forEach(p => { %>
+      <option value="<%= p.id %>" <%= String(task.panitia_id) === String(p.id) ? 'selected' : '' %>><%= p.nama %> (<%= p.divisi %>)</option>
+    <% }) %>
+  </select>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a href="<%= base %>" class="btn">Batal</a>
+  </div>
+</form>
+
+<%- include('../../partials/footer') %>

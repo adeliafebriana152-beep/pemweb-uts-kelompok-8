@@ -1,13 +1,15 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+const loadEvent = require('../middlewares/loadEvent');
 const panitiaController = require('../controllers/panitiaController');
+    
+router.use(loadEvent); 
 
-// Rute CRUD Panitia (Tanpa middleware upload multer)
-router.get('/', panitiaController.index);
-router.get('/add', panitiaController.renderAddForm);
-router.post('/add', panitiaController.create);
-router.get('/edit/:id', panitiaController.renderEditForm);
-router.post('/edit/:id', panitiaController.update);
-router.post('/delete/:id', panitiaController.delete);
+router.get('/', panitiaController.getListPanitia);
+router.get('/create', panitiaController.getFormCreatePanitia);
+router.post('/', panitiaController.postCreatePanitia);
+router.get('/:id/edit', panitiaController.getFormEditPanitia);
+router.post('/:id', panitiaController.postUpdatePanitia);
+router.post('/:id/delete', panitiaController.postDeletePanitia);
 
 module.exports = router;

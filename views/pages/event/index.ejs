@@ -36,6 +36,8 @@
           <th>Lokasi</th>
           <th>Kuota</th>
           <th>Jumlah Peserta</th>
+          <th>Panitia</th>
+          <th>Tugas</th>
           <th>Status</th>
           <th>Aksi</th>
         </tr>
@@ -50,11 +52,16 @@
             <td><%= formatWaktu(e.waktu) %></td>
             <td><%= e.lokasi %></td>
             <td><%= e.kuota %></td>
-            <td><%= e.jumlah_peserta %></td>
+            <td><a href="/event/<%= e.id %>/peserta"><%= e.jumlah_peserta %></a></td>
+            <td><a href="/event/<%= e.id %>/panitia"><%= e.jumlah_panitia %></a></td>
+            <td><a href="/event/<%= e.id %>/task"><%= e.jumlah_tugas %></a></td>
             <td><span class="badge badge-<%= e.status %>"><%= e.status.charAt(0).toUpperCase() + e.status.slice(1) %></span></td>
             <td class="aksi">
-              <a href="/event/<%= e.id %>/edit" class="btn btn-sm">Edit</a>
-              <form method="POST" action="/event/<%= e.id %>/delete" onsubmit="return confirm('Hapus event ini?')">
+              <a href="/event/<%= e.id %>/peserta" class="btn btn-sm">Peserta</a>
+              <a href="/event/<%= e.id %>/panitia" class="btn btn-sm">Panitia</a>
+              <a href="/event/<%= e.id %>/task" class="btn btn-sm">Tugas</a>
+              <a href="/event/<%= e.id %>/edit" id="btn-edit" class="btn btn-sm">Edit</a>
+              <form method="POST" action="/event/<%= e.id %>/delete" onsubmit="return confirm('Hapus event ini? Peserta, panitia, dan tugasnya akan kehilangan event (event_id menjadi NULL).')">
                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
               </form>
             </td>
