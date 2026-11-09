@@ -24,16 +24,16 @@ const Panitia = {
         return rows;
     },
 
-    // Create: Menyimpan data panitia baru
+    // Create: Menyimpan data panitia baru (Tanpa foto)
     create: async (data) => {
-        const query = 'INSERT INTO panitia (nama, nim, divisi, jabatan, jenis_kelamin, foto, event_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.foto, data.event_id || null]);
+        const query = 'INSERT INTO panitia (nama, nim, divisi, jabatan, jenis_kelamin, event_id) VALUES (?, ?, ?, ?, ?, ?)';
+        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.event_id || null]);
     },
 
-    // Update: Memperbarui data panitia
+    // Update: Memperbarui data panitia (Tanpa foto)
     update: async (id, data) => {
-        const query = 'UPDATE panitia SET nama = ?, nim = ?, divisi = ?, jabatan = ?, jenis_kelamin = ?, foto = ?, event_id = ? WHERE id = ?';
-        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.foto, data.event_id || null, id]);
+        const query = 'UPDATE panitia SET nama = ?, nim = ?, divisi = ?, jabatan = ?, jenis_kelamin = ?, event_id = ? WHERE id = ?';
+        await db.query(query, [data.nama, data.nim, data.divisi, data.jabatan, data.jenis_kelamin, data.event_id || null, id]);
     },
 
     // Delete: Menghapus data panitia
