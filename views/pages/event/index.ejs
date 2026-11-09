@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+
+<div class="top-bar">
+  <h1>Daftar Event</h1>
+  <a href="/event/create" class="btn btn-primary">+ Tambah Event</a>
+</div>
+
+<% if (msg === 'created') { %><div class="alert success">Event berhasil ditambahkan.</div><% } %>
+<% if (msg === 'updated') { %><div class="alert success">Event berhasil diperbarui.</div><% } %>
+<% if (msg === 'deleted') { %><div class="alert success">Event berhasil dihapus.</div><% } %>
+
+<form method="GET" action="/event" class="filter">
+  <input type="text" name="q" placeholder="Cari judul event..." value="<%= q %>">
+  <select name="status">
+    <option value="">Semua Status</option>
+    <option value="dibuka"  <%= status === 'dibuka'  ? 'selected' : '' %>>Dibuka</option>
+    <option value="ditutup" <%= status === 'ditutup' ? 'selected' : '' %>>Ditutup</option>
+    <option value="selesai" <%= status === 'selesai' ? 'selected' : '' %>>Selesai</option>
+  </select>
+  <button type="submit" class="btn">Cari</button>
+  <a href="/event" class="btn">Reset</a>
+</form>
+
+<% if (events.length === 0) { %>
+  <div class="empty">Belum ada event</div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Judul</th>
+          <th>Kategori</th>
+          <th>Tanggal</th>
+          <th>Waktu</th>
+          <th>Lokasi</th>
+          <th>Kuota</th>
+          <th>Jumlah Peserta</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% events.forEach((e, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= e.judul %></td>
+            <td><%= e.kategori %></td>
+            <td><%= formatTanggal(e.tanggal) %></td>
+            <td><%= formatWaktu(e.waktu) %></td>
+            <td><%= e.lokasi %></td>
+            <td><%= e.kuota %></td>
+            <td><%= e.jumlah_peserta %></td>
+            <td><span class="badge badge-<%= e.status %>"><%= e.status.charAt(0).toUpperCase() + e.status.slice(1) %></span></td>
+            <td class="aksi">
+              <a href="/event/<%= e.id %>/edit" class="btn btn-sm">Edit</a>
+              <form method="POST" action="/event/<%= e.id %>/delete" onsubmit="return confirm('Hapus event ini?')">
+                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

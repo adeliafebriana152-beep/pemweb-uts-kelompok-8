@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+
+<h1><%= title %></h1>
+
+<% if (errors.length > 0) { %>
+  <div class="alert error">
+    <ul>
+      <% errors.forEach(err => { %><li><%= err %></li><% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Judul</label>
+  <input type="text" name="judul" maxlength="150" value="<%= event.judul || '' %>" required>
+
+  <label>Deskripsi</label>
+  <textarea name="deskripsi" rows="4"><%= event.deskripsi || '' %></textarea>
+
+  <label>Kategori</label>
+  <select name="kategori">
+    <% KATEGORI.forEach(k => { %>
+      <option value="<%= k %>" <%= event.kategori === k ? 'selected' : '' %>><%= k %></option>
+    <% }) %>
+  </select>
+
+  <div class="row">
+    <div>
+      <label>Tanggal</label>
+      <input type="date" name="tanggal" value="<%= event.tanggal ? String(event.tanggal).slice(0, 10) : '' %>" required>
+    </div>
+    <div>
+      <label>Waktu</label>
+      <input type="time" name="waktu" value="<%= event.waktu ? String(event.waktu).slice(0, 5) : '' %>" required>
+    </div>
+  </div>
+
+  <label>Lokasi</label>
+  <input type="text" name="lokasi" value="<%= event.lokasi || '' %>" required>
+
+  <label>Kuota</label>
+  <input type="number" name="kuota" min="1" value="<%= event.kuota || '' %>" required>
+
+  <label>Status</label>
+  <select name="status">
+    <% STATUS.forEach(s => { %>
+      <option value="<%= s %>" <%= event.status === s ? 'selected' : '' %>><%= s.charAt(0).toUpperCase() + s.slice(1) %></option>
+    <% }) %>
+  </select>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a href="/event" class="btn">Batal</a>
+  </div>
+</form>
+
+<%- include('../partials/footer') %>
