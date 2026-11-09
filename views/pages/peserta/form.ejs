@@ -1,0 +1,43 @@
+<%- include('../../partials/header') %>
+
+<h1><%= title %></h1>
+
+<% if (errors.length > 0) { %>
+  <div class="alert error">
+    <ul>
+      <% errors.forEach(err => { %><li><%= err %></li><% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form method="POST" action="<%= action %>" class="form">
+  <label>Nama</label>
+  <input type="text" name="nama" maxlength="100" value="<%= peserta.nama || '' %>" required>
+
+  <label>NIM</label>
+  <input type="text" name="nim" maxlength="20" value="<%= peserta.nim || '' %>" required>
+
+  <label>Email</label>
+  <input type="email" name="email" maxlength="100" value="<%= peserta.email || '' %>" required>
+
+  <label>No HP</label>
+  <input type="text" name="no_hp" maxlength="20" value="<%= peserta.no_hp || '' %>" required>
+
+  <label>Prodi</label>
+  <input type="text" name="prodi" maxlength="80" value="<%= peserta.prodi || '' %>" required>
+
+  <label>Event (opsional)</label>
+  <select name="event_id">
+    <option value="">Tanpa event</option>
+    <% events.forEach(e => { %>
+      <option value="<%= e.id %>" <%= String(peserta.event_id) === String(e.id) ? 'selected' : '' %>><%= e.judul %></option>
+    <% }) %>
+  </select>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a href="/peserta" class="btn">Batal</a>
+  </div>
+</form>
+
+<%- include('../../partials/footer') %>

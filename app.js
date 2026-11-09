@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const eventRoutes = require('./routes/eventRoutes');
+const pesertaRoutes = require('./routes/pesertaRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.locals.formatWaktu = (str) => (str ? String(str).slice(0, 5) + ' WIB' : '-')
 
 app.get('/', (req, res) => res.redirect('/event'));
 app.use('/event', eventRoutes);
+app.use('/peserta', pesertaRoutes);
 
 app.use((req, res) => res.status(404).send('Halaman tidak ditemukan'));
 

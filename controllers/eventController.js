@@ -47,7 +47,7 @@ exports.index = async (req, res, next) => {
     const status = STATUS.includes(req.query.status) ? req.query.status : '';
     const q = (req.query.q || '').trim();
     const events = await Event.getAll({ status, q });
-    res.render('event/index', { events, status, q, msg: req.query.msg || '' });
+    res.render('pages/event/index', { events, status, q, msg: req.query.msg || '' });
   } catch (err) {
     next(err);
   }
@@ -70,7 +70,7 @@ exports.store = async (req, res, next) => {
   try {
     const { data, errors } = validate(req.body);
     if (errors.length > 0) {
-      return res.status(400).render('event/form', {
+      return res.status(400).render('pages/event/form', {
         title: 'Tambah Event',
         action: '/event',
         event: data,
@@ -91,7 +91,7 @@ exports.editForm = async (req, res, next) => {
   try {
     const event = await Event.getById(req.params.id);
     if (!event) return res.status(404).send('Event tidak ditemukan');
-    res.render('event/form', {
+    res.render('pages/event/form', {
       title: 'Edit Event',
       action: '/event/' + event.id,
       event,
@@ -110,7 +110,7 @@ exports.update = async (req, res, next) => {
     const id = req.params.id;
     const { data, errors } = validate(req.body);
     if (errors.length > 0) {
-      return res.status(400).render('event/form', {
+      return res.status(400).render('pages/event/form', {
         title: 'Edit Event',
         action: '/event/' + id,
         event: data,

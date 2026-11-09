@@ -41,3 +41,6 @@ th { background: #eef2f7; }
 .form .row { display: flex; gap: 12px; }
 .form .row > div { flex: 1; }
 .form-actions { margin-top: 18px; display: flex; gap: 8px; }
+
+.navbar a { margin-right: 20px; }
+.muted { color: #999; font-style: italic; }
