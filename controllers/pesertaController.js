@@ -29,7 +29,7 @@ function validate(body) {
   return { data, errors };
 }
 
-exports.index = async (req, res, next) => {
+exports.getListPeserta = async (req, res, next) => {
   try {
     const q = (req.query.q || '').trim();
     const peserta = await Peserta.getAll(req.event.id, q);
@@ -37,13 +37,13 @@ exports.index = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.createForm = (req, res) => {
+exports.getFormCreate = (req, res) => {
   res.render('pages/peserta/form', {
     title: 'Tambah Peserta', action: base(req), base: base(req), peserta: {}, errors: []
   });
 };
 
-exports.store = async (req, res, next) => {
+exports.postCreate = async (req, res, next) => {
   try {
     const { data, errors } = validate(req.body);
     if (errors.length > 0) {
@@ -56,7 +56,7 @@ exports.store = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.editForm = async (req, res, next) => {
+exports.getEditForm = async (req, res, next) => {
   try {
     const peserta = await Peserta.getById(req.params.id, req.event.id);
     if (!peserta) return res.status(404).send('Peserta tidak ditemukan');
@@ -66,7 +66,7 @@ exports.editForm = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.update = async (req, res, next) => {
+exports.postUpdate = async (req, res, next) => {
   try {
     const { data, errors } = validate(req.body);
     if (errors.length > 0) {
@@ -81,7 +81,7 @@ exports.update = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.destroy = async (req, res, next) => {
+exports.postDelete = async (req, res, next) => {
   try {
     await Peserta.remove(req.params.id, req.event.id);
     res.redirect(base(req) + '?msg=deleted');
