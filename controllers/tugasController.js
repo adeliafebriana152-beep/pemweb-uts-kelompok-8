@@ -3,7 +3,7 @@ const Panitia = require('../models/panitiaModel');
 
 const PRIORITAS = ['tinggi', 'sedang', 'rendah'];
 const STATUS_TASK = ['belum', 'proses', 'selesai'];
-const DIVISI = ['Konsumsi', 'Humas', 'PubDekDok', 'Kesekretariatan'];
+const DIVISI = ['Konsumsi', 'Humas', 'PubDekDok', 'Kesekretariatan', 'Acara'];
 const base = (req) => '/event/' + req.event.id + '/task';
 
 function tanggalValid(str) {
@@ -19,7 +19,6 @@ function validate(body, panitiaList) {
     prioritas: body.prioritas,
     tgl_deadline: body.tgl_deadline,
     status_task: body.status_task,
-    // "Belum ditentukan" (string kosong) disimpan sebagai NULL
     panitia_id: body.panitia_id ? Number(body.panitia_id) : null
   };
   const errors = [];
